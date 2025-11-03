@@ -1,0 +1,6 @@
+#keep your library name in this file and run cmd in  termincal: pip install -r requirements.txt
+torch
+transformers
+evaluate
+streamlit       #for deployment of model on streamlit
+boto3
