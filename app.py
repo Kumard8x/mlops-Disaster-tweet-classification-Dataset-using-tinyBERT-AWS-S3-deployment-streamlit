@@ -16,7 +16,7 @@ s3=boto3.client('s3', region_name='us-east-1')
 
 
 #download model from s3 bucket.
-def download_dir(localP_path, s3_prefix):
+def download_dir(local_path, s3_prefix):
     os.makedirs(local_path, exist_ok=True)
     paginator=s3.get_paginator('list_objects_v2')
     
@@ -38,30 +38,25 @@ st.markdown("### Tweet Disaster analysis using TinyBERT transofer.")
 button = st.button("Click here to download model")
 if button:
     try: 
-        with st.spinner("Please wail .... Downloading"):
-            download_dir(local_path, s3_prefix)
-                        
-                
+        if not os.listdir(local_path):
+            with st.spinner("Please wail .... Downloading"):
+                download_dir(local_path, s3_prefix)
+                  
     except Exception as e:
-        st.write('Facing Model download problem from AWS S3 server side.')
-        st.write('Sorry, Can not use this model without dowload.', {e})
-
+        st.error(f'Facing Model download problem from AWS S3 server side.\n Sorry Can not use this model without dowload. \n {e}')
+        
 text = st.text_area("Enter your Tweet here")
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 predict = st.button('Predict')
 
-classifier = pipeline('text-classification', model='tinybert-disaster-tweet', device=device)
 
-if predict:
-    with st.spinner("wait.."):
-        output = classifier(text)
-    st.write(output)
-
-
-
-          
-
-                
-                
+if os.listdir(local_path):
+    classifier = pipeline('text-classification', model='tinybert-disaster-tweet', device=device)
+    if predict:
+        with st.spinner("wait.."):
+            output = classifier(text)
+        st.write(output)
+else:
+    st.warning("Model is not availabel. Please first Download the model then use it.")
