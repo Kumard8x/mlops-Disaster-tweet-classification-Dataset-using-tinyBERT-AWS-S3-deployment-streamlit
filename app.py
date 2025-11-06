@@ -9,7 +9,7 @@ bucket_name="mlops-30-102025"
 
 
 local_path='tinybert-disaster-tweet'
-s3_prefix = 'ml-model/tinybert-sentiment-analysis'
+s3_prefix = 'ml-model/tinybert-disaster-tweet/'
 
 s3=boto3.client('s3', region_name='us-east-1')
 
